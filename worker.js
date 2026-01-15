@@ -5,6 +5,21 @@ addEventListener('fetch', event => {
 async function handleRequest(request) {
   const url = new URL(request.url)
   const path = url.pathname
+  
+  // =========== 【新增代码开始】 ===========
+  // 处理 CORS 预检请求 (OPTIONS)
+  // 如果没有这段，EdgeOne 前端发起的 POST 请求会被浏览器拦截
+  if (request.method === 'OPTIONS') {
+    return new Response(null, {
+      status: 204,
+      headers: {
+        'Access-Control-Allow-Origin': '*', // 或者填您 EdgeOne 的具体域名
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, Cookie', // 允许的头
+        'Access-Control-Max-Age': '86400', // 缓存预检结果一天
+      }
+    });
+  }
 
   
   // 获取KV命名空间
